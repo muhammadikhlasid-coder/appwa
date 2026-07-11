@@ -3,7 +3,7 @@
  * Terhubung ke FastAPI backend di localhost:8000
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8001';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://appwa-s5o6.onrender.com';
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const isBrowser = typeof window !== 'undefined';

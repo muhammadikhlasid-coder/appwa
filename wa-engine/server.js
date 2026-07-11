@@ -23,7 +23,7 @@ const fs = require('fs');
 const app = express();
 app.use(express.json());
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const AUTH_DIR = './auth_info'; // QR session disimpan di sini
 
 // Helper function untuk membersihkan cache auth yang error

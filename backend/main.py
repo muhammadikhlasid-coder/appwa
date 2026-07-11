@@ -32,9 +32,9 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(message
 logger = logging.getLogger("safe_wa.main")
 
 # ── Config dari .env ───────────────────────────────────────────────────────────
-WA_ENGINE_URL = os.getenv("WA_ENGINE_URL", "http://localhost:3001")
+WA_ENGINE_URL = os.getenv("WA_ENGINE_URL", "https://appwa-1.onrender.com")
 GEMINI_KEY    = os.getenv("GEMINI_API_KEY", "")
-FRONTEND_URL  = os.getenv("FRONTEND_URL", "http://localhost:3000")
+FRONTEND_URL  = os.getenv("FRONTEND_URL", "https://appwa.netlify.app")
 RATE_LIMIT    = int(os.getenv("RATE_LIMIT_PER_MIN", "3"))
 
 
@@ -291,7 +291,7 @@ async def wa_status(user: dict = Depends(get_current_user)):
                 "name": data.get("name"),
                 "has_qr": data.get("has_qr", False),
                 "qr_url": f"{WA_ENGINE_URL}/qr",
-                "scan_url": "http://localhost:3001/qr",
+                "scan_url": f"{WA_ENGINE_URL}/qr",
             }
     except Exception:
         return {
