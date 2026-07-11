@@ -45,7 +45,7 @@ export default function WarmupPage() {
   };
 
   const sessions: WarmupSession[] = warmupData?.active ?? [];
-  const geminiEnabled = warmupData?.gemini_configured ?? false;
+  const geminiEnabled = warmupData?.gemini_enabled ?? false;
 
   const intensityOpts = [
     { key: 'gentle', label: 'Gentle', desc: '3–5 chats/day', color: 'var(--accent-green)' },
