@@ -1,0 +1,19 @@
+{
+  "name": "wa-engine",
+  "version": "1.0.0",
+  "description": "Safe WA Gateway — Baileys Engine",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.18",
+    "express": "^4.19.2",
+    "qrcode": "^1.5.4",
+    "pino": "^9.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

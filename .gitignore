@@ -1,0 +1,15 @@
+node_modules/
+__pycache__/
+*.pyc
+venv/
+.env
+.history/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+backend/venv/
+backend/__pycache__/
+wa-engine/node_modules/
+wa-engine/auth_info_baileys/
+wa-engine/sessions/
+.DS_Store
