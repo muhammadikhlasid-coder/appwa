@@ -24,6 +24,7 @@ def init_db():
         conn.execute("""
             CREATE TABLE IF NOT EXISTS sessions (
                 id          TEXT PRIMARY KEY,
+                user_id     TEXT NOT NULL,
                 name        TEXT NOT NULL,
                 phone       TEXT NOT NULL UNIQUE,
                 status      TEXT NOT NULL DEFAULT 'disconnected',
@@ -45,6 +46,7 @@ def init_db():
         conn.execute("""
             CREATE TABLE IF NOT EXISTS sent_messages (
                 id          TEXT NOT NULL,
+                user_id     TEXT NOT NULL,
                 to_phone    TEXT NOT NULL,
                 text        TEXT NOT NULL,
                 zwc         INTEGER NOT NULL DEFAULT 1,
@@ -55,26 +57,45 @@ def init_db():
                 created_at  REAL NOT NULL DEFAULT (unixepoch())
             )
         """)
+        
+        # Simple migration: add user_id column if it doesn't exist (for existing databases)
+        try:
+            conn.execute("ALTER TABLE sessions ADD COLUMN user_id TEXT NOT NULL DEFAULT 'system'")
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+            
+        try:
+            conn.execute("ALTER TABLE sent_messages ADD COLUMN user_id TEXT NOT NULL DEFAULT 'system'")
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+            
         conn.commit()
 
 
 # ── Sessions CRUD ──────────────────────────────────────────────────────────────
 
-def get_all_sessions() -> list[dict]:
+def get_all_sessions(user_id: str = None) -> list[dict]:
     with get_conn() as conn:
-        rows = conn.execute("SELECT * FROM sessions ORDER BY created_at ASC").fetchall()
+        if user_id:
+            rows = conn.execute("SELECT * FROM sessions WHERE user_id = ? ORDER BY created_at ASC", (user_id,)).fetchall()
+        else:
+            rows = conn.execute("SELECT * FROM sessions ORDER BY created_at ASC").fetchall()
         return [dict(r) for r in rows]
 
 
-def get_session(session_id: str) -> dict | None:
+def get_session(session_id: str, user_id: str = None) -> dict | None:
     with get_conn() as conn:
-        row = conn.execute("SELECT * FROM sessions WHERE id = ?", (session_id,)).fetchone()
+        if user_id:
+            row = conn.execute("SELECT * FROM sessions WHERE id = ? AND user_id = ?", (session_id, user_id)).fetchone()
+        else:
+            row = conn.execute("SELECT * FROM sessions WHERE id = ?", (session_id,)).fetchone()
         return dict(row) if row else None
 
 
-def add_session(session_id: str, name: str, phone: str, enable_warmup: bool = False) -> dict:
+def add_session(session_id: str, user_id: str, name: str, phone: str, enable_warmup: bool = False) -> dict:
     session = {
         "id": session_id,
+        "user_id": user_id,
         "name": name,
         "phone": phone,
         "status": "disconnected",
@@ -86,8 +107,8 @@ def add_session(session_id: str, name: str, phone: str, enable_warmup: bool = Fa
     }
     with get_conn() as conn:
         conn.execute("""
-            INSERT INTO sessions (id, name, phone, status, trust, sent_today, proxy, warmup, created_at)
-            VALUES (:id, :name, :phone, :status, :trust, :sent_today, :proxy, :warmup, :created_at)
+            INSERT INTO sessions (id, user_id, name, phone, status, trust, sent_today, proxy, warmup, created_at)
+            VALUES (:id, :user_id, :name, :phone, :status, :trust, :sent_today, :proxy, :warmup, :created_at)
         """, session)
         conn.commit()
     return session
@@ -109,29 +130,37 @@ def increment_sent(session_id: str):
         conn.commit()
 
 
-def delete_session(session_id: str):
+def delete_session(session_id: str, user_id: str = None):
     with get_conn() as conn:
-        conn.execute("DELETE FROM sessions WHERE id = ?", (session_id,))
+        if user_id:
+            conn.execute("DELETE FROM sessions WHERE id = ? AND user_id = ?", (session_id, user_id))
+        else:
+            conn.execute("DELETE FROM sessions WHERE id = ?", (session_id,))
         conn.commit()
 
 
 # ── Sent Messages ──────────────────────────────────────────────────────────────
 
-def log_sent_message(msg_id: str, to: str, text: str, zwc: bool,
+def log_sent_message(msg_id: str, user_id: str, to: str, text: str, zwc: bool,
                      delay_ms: int, chunk: str, sent_at: str, simulated: bool):
     with get_conn() as conn:
         conn.execute("""
-            INSERT INTO sent_messages (id, to_phone, text, zwc, delay_ms, chunk, sent_at, simulated)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (msg_id, to, text, int(zwc), delay_ms, chunk, sent_at, int(simulated)))
+            INSERT INTO sent_messages (id, user_id, to_phone, text, zwc, delay_ms, chunk, sent_at, simulated)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (msg_id, user_id, to, text, int(zwc), delay_ms, chunk, sent_at, int(simulated)))
         conn.commit()
 
 
-def get_recent_sent(limit: int = 20) -> list[dict]:
+def get_recent_sent(limit: int = 20, user_id: str = None) -> list[dict]:
     with get_conn() as conn:
-        rows = conn.execute(
-            "SELECT * FROM sent_messages ORDER BY created_at DESC LIMIT ?", (limit,)
-        ).fetchall()
+        if user_id:
+            rows = conn.execute(
+                "SELECT * FROM sent_messages WHERE user_id = ? ORDER BY created_at DESC LIMIT ?", (user_id, limit,)
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT * FROM sent_messages ORDER BY created_at DESC LIMIT ?", (limit,)
+            ).fetchall()
         return [
             {
                 "id": r["id"], "to": r["to_phone"], "text": r["text"],

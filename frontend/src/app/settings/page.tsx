@@ -35,7 +35,7 @@ export default function SettingsPage() {
   const [waStatus, setWaStatus] = useState<WAStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [geminiKey, setGeminiKey] = useState('');
-  const [waEngineUrl, setWaEngineUrl] = useState('http://localhost:3001');
+  const [waEngineUrl, setWaEngineUrl] = useState('https://appwa-1.onrender.com');
   const [rateLimit, setRateLimit] = useState('3');
   const [saved, setSaved] = useState('');
 
@@ -205,13 +205,13 @@ export default function SettingsPage() {
           <h2 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Key size={14} color="var(--accent-purple)" /> File .env Preview
           </h2>
-          <CopyBtn value={`WA_ENGINE_URL=${waEngineUrl}\nGEMINI_API_KEY=${geminiKey || 'your_key_here'}\nRATE_LIMIT_PER_MIN=${rateLimit}\nFRONTEND_URL=http://localhost:3000`} />
+          <CopyBtn value={`WA_ENGINE_URL=${waEngineUrl}\nGEMINI_API_KEY=${geminiKey || 'your_key_here'}\nRATE_LIMIT_PER_MIN=${rateLimit}\nFRONTEND_URL=https://appwa.netlify.app`} />
         </div>
         <pre style={{ background: 'var(--bg-primary)', borderRadius: '10px', padding: '16px', fontSize: '12.5px', color: 'var(--accent-green)', fontFamily: 'monospace', lineHeight: 1.8, margin: 0, overflowX: 'auto' }}>
           {`WA_ENGINE_URL=${waEngineUrl}
 GEMINI_API_KEY=${geminiKey ? '***' + geminiKey.slice(-4) : 'your_key_here'}
 RATE_LIMIT_PER_MIN=${rateLimit}
-FRONTEND_URL=http://localhost:3000`}
+FRONTEND_URL=https://appwa.netlify.app`}
         </pre>
         <p style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '10px' }}>
           Simpan ke <code>backend/.env</code> lalu restart uvicorn.

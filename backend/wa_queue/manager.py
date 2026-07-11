@@ -33,6 +33,7 @@ class QueueMessage:
     phone: str
     message: str
     chunks: list[str]
+    session_id: str
     added_at: float = field(default_factory=time.time)
     retries: int = 0
     status: str = "queued"  # queued | processing | sent | failed
