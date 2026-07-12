@@ -16,6 +16,14 @@ app.use(express.json());
 const PORT = process.env.PORT || 3001;
 const BASE_AUTH_DIR = './auth_info';
 
+// ── Global Error Handlers (Mencegah Crash) ────────────────────────────────────
+process.on('uncaughtException', (err) => {
+  console.error('🔥 Uncaught Exception:', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🔥 Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 // ── State ─────────────────────────────────────────────────────────────────────
 const sessions = new Map();
 const logger = pino({ level: 'silent' });
@@ -81,7 +89,7 @@ async function connectToWhatsApp(sessionId, sessionObj, phone) {
         
         if (connectedPhone !== expectedPhone) {
           console.error(`❌ Phone mismatch for ${sessionId}! Expected ${expectedPhone}, got ${connectedPhone}. Logging out...`);
-          sessionObj.sock.logout();
+          sessionObj.sock.logout().catch(err => console.error("Logout error:", err));
           clearAuth(sessionId);
           sessionObj.connectionState = 'disconnected';
           return;
@@ -159,7 +167,37 @@ app.get('/sessions/:id/qr', (req, res) => {
   if (!sessionObj) return res.status(404).send('Session not found. Call /connect first.');
   
   if (sessionObj.connectionState === 'connected') {
-    return res.json({ connected: true, message: 'Already connected' });
+    return res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Safe WA Gateway — Connected</title>
+        <style>
+          body { background: #0d0f14; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: sans-serif; color: white; text-align: center; }
+          .success-icon { width: 80px; height: 80px; background: rgba(0, 214, 143, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform: scale(0); }
+          .success-icon svg { width: 40px; height: 40px; color: #00d68f; }
+          @keyframes pop { to { transform: scale(1); } }
+          h2 { margin: 0 0 10px 0; color: #fff; font-weight: 600; }
+          p { color: #888; font-size: 14px; margin: 0; }
+          .phone-badge { display: inline-block; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 20px; font-family: monospace; font-size: 14px; margin-top: 15px; color: #00d68f; }
+        </style>
+      </head>
+      <body>
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <h2>Berhasil Terhubung!</h2>
+        <p>WhatsApp Anda sudah siap digunakan.</p>
+        <div class="phone-badge">+${sessionObj.connectionInfo?.phone || 'Loading...'}</div>
+        <p style="margin-top: 30px; font-size: 12px; opacity: 0.5;">Jendela ini akan otomatis tertutup dalam 3 detik...</p>
+        <script>
+          setTimeout(() => {
+            window.close();
+          }, 3000);
+        </script>
+      </body>
+      </html>
+    `);
   }
   if (!sessionObj.qrCodeBase64) {
     return res.status(503).send(`

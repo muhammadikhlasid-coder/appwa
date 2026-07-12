@@ -89,7 +89,7 @@ export default function SettingsPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div className={waStatus?.wa_connected ? 'animate-pulse-dot' : ''} style={{ width: '8px', height: '8px', borderRadius: '50%', background: statusColor }} />
             <span style={{ fontSize: '12px', fontWeight: '600', color: statusColor }}>{loading ? '…' : statusText}</span>
-            <button className="btn-ghost" onClick={fetchWaStatus} style={{ padding: '4px 8px' }}><RefreshCw size={12} /></button>
+            <button className="btn-ghost" onClick={() => window.location.reload()} style={{ padding: '4px 8px' }}><RefreshCw size={12} /></button>
           </div>
         </div>
 
@@ -107,20 +107,20 @@ export default function SettingsPage() {
             </div>
           </div>
         ) : waStatus?.engine_running ? (
-          /* QR Scan prompt */
+          /* Engine online prompt */
           <div style={{ background: 'var(--accent-amber-dim)', border: '1px solid rgba(255,170,0,0.3)', borderRadius: '10px', padding: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--accent-amber)', marginBottom: '4px' }}>
-                  Scan QR untuk login WhatsApp
+                  Engine Berjalan Normal
                 </div>
                 <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                  Buka WhatsApp → Perangkat Tertaut → Tautkan Perangkat
+                  Silakan buka menu Sessions untuk menghubungkan nomor WhatsApp.
                 </div>
               </div>
-              <a href="http://localhost:3001/qr" target="_blank" rel="noreferrer"
+              <a href="/sessions"
                 className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none', padding: '8px 16px' }}>
-                <QrCode size={14} /> Buka QR Code <ExternalLink size={11} />
+                <QrCode size={14} /> Buka Sessions
               </a>
             </div>
           </div>
@@ -226,7 +226,6 @@ FRONTEND_URL=https://appwa.netlify.app`}
             { label: 'Start Backend', cmd: 'cd backend && venv\\Scripts\\activate && uvicorn main:app --reload' },
             { label: 'Start WA Engine', cmd: 'cd wa-engine && npm start' },
             { label: 'Start Frontend', cmd: 'cd frontend && npm run dev' },
-            { label: 'Scan QR (browser)', cmd: 'http://localhost:3001/qr' },
             { label: 'API Docs (Swagger)', cmd: 'http://localhost:8000/docs' },
           ].map((item, i) => (
             <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-primary)', borderRadius: '8px', padding: '10px 14px' }}>

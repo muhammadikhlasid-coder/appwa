@@ -302,6 +302,10 @@ async def get_sessions(user: dict = Depends(get_current_user)):
         for s in sessions:
             try:
                 r = await client.get(f"{WA_ENGINE_URL}/sessions/{s['id']}/status")
+                if r.status_code == 404:
+                    await client.post(f"{WA_ENGINE_URL}/sessions/{s['id']}/connect", json={"phone": s["phone"]})
+                    r = await client.get(f"{WA_ENGINE_URL}/sessions/{s['id']}/status")
+                
                 if r.status_code == 200:
                     data = r.json()
                     is_connected = data.get("connected", False)

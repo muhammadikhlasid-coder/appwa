@@ -74,7 +74,7 @@ export default function WarmupPage() {
           <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>AI-powered bot chatter untuk naikkan Trust Score nomor baru</p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button className="btn-ghost" onClick={fetchWarmup}><RefreshCw size={13} /> Refresh</button>
+          <button className="btn-ghost" onClick={() => window.location.reload()}><RefreshCw size={13} /> Refresh</button>
           <button className="btn-primary" onClick={handleTrigger} disabled={triggering}>
             {triggering ? '⏳ Running...' : <><Play size={14} /> Trigger Cycle Now</>}
           </button>

@@ -101,7 +101,7 @@ export default function SessionsPage() {
           <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Manage your WhatsApp numbers & connections</p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button className="btn-ghost" onClick={fetchSessions}><RefreshCw size={13} /> Refresh</button>
+          <button className="btn-ghost" onClick={() => window.location.reload()}><RefreshCw size={13} /> Refresh</button>
           <button className="btn-primary" onClick={() => setShowModal(true)}><Plus size={15} /> Add New Number</button>
         </div>
       </div>

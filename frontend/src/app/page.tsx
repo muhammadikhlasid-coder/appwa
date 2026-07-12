@@ -90,7 +90,7 @@ export default function DashboardPage() {
           </div>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button className="btn-ghost" onClick={fetchStats}>
+          <button className="btn-ghost" onClick={() => window.location.reload()} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <RefreshCw size={13} /> Refresh
           </button>
           <button className="btn-primary" onClick={() => window.location.href = '/sessions'}>

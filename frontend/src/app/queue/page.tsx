@@ -83,7 +83,7 @@ export default function QueuePage() {
           <button className="btn-ghost" onClick={() => setPaused(p => !p)}>
             {paused ? <><Play size={14} /> Resume</> : <><Pause size={14} /> Pause</>}
           </button>
-          <button className="btn-ghost" onClick={fetchQueue}><RefreshCw size={13} /> Refresh</button>
+          <button className="btn-ghost" onClick={() => window.location.reload()}><RefreshCw size={13} /> Refresh</button>
         </div>
       </div>
 
