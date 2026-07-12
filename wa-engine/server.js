@@ -160,7 +160,25 @@ app.get('/sessions/:id/qr', (req, res) => {
     return res.json({ connected: true, message: 'Already connected' });
   }
   if (!sessionObj.qrCodeBase64 && !sessionObj.pairingCode) {
-    return res.status(503).json({ error: 'QR/Pairing not ready yet' });
+    return res.status(503).send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Safe WA Gateway — Loading</title>
+        <meta http-equiv="refresh" content="3">
+        <style>
+          body { background: #0d0f14; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: sans-serif; color: white; }
+          .loader { border: 4px solid #333; border-top: 4px solid #00d68f; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px; }
+          @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        </style>
+      </head>
+      <body>
+        <div class="loader"></div>
+        <h3>Menyiapkan kode...</h3>
+        <p style="color: #888; font-size: 14px;">Mohon tunggu sebentar</p>
+      </body>
+      </html>
+    `);
   }
   
   res.send(`
