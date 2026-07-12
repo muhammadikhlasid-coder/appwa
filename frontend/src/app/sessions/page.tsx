@@ -1,8 +1,22 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Smartphone, Plus, QrCode, Wifi, WifiOff, Flame, RefreshCw, MoreVertical, ShieldCheck, AlertCircle, Trash2 } from 'lucide-react';
+import { Smartphone, Plus, QrCode, Wifi, WifiOff, Flame, RefreshCw, MoreVertical, ShieldCheck, AlertCircle, Trash2, Copy, CheckCircle2, Code } from 'lucide-react';
 import { api, type Session } from '@/lib/api';
 import LoadingLogo from '@/components/LoadingLogo';
+
+function CopyBtn({ value, label }: { value: string, label?: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard.writeText(value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <button onClick={copy} className="btn-ghost" style={{ padding: '4px 8px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+      {copied ? <><CheckCircle2 size={11} color="var(--accent-green)" /> Copied</> : <><Copy size={11} /> {label || 'Copy'}</>}
+    </button>
+  );
+}
 
 function TrustBar({ score }: { score: number }) {
   const color = score >= 70 ? 'var(--accent-green)' : score >= 40 ? 'var(--accent-amber)' : 'var(--accent-red)';
@@ -256,7 +270,23 @@ export default function SessionsPage() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            {/* API Integration Section */}
+            <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <h3 style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Code size={14} color="var(--accent-blue)" /> ITSM Integration Config (.env)
+                </h3>
+                <CopyBtn value={`SAFEWA_URL="${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}"\nSAFEWA_API_KEY="${typeof window !== 'undefined' ? localStorage.getItem('token') || 'YOUR_TOKEN' : 'YOUR_TOKEN'}"\nSAFEWA_SESSION_ID="${selectedSession.id}"\nSAFEWA_TIMEOUT=30`} />
+              </div>
+              <pre style={{ background: 'var(--bg-primary)', borderRadius: '8px', padding: '12px', fontSize: '11px', color: 'var(--accent-green)', fontFamily: 'monospace', overflowX: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+{`SAFEWA_URL="${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}"
+SAFEWA_API_KEY="${typeof window !== 'undefined' ? localStorage.getItem('token') || 'YOUR_TOKEN' : 'YOUR_TOKEN'}"
+SAFEWA_SESSION_ID="${selectedSession.id}"
+SAFEWA_TIMEOUT=30`}
+              </pre>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '24px' }}>
               <button className="btn-primary" onClick={() => setSelectedSession(null)}>Close</button>
             </div>
           </div>
