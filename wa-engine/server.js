@@ -70,11 +70,13 @@ async function connectToWhatsApp(sessionId, sessionObj, phone) {
       sessionObj.connectionState = 'disconnected';
       sessionObj.qrCodeBase64 = null;
       sessionObj.pairingCode = null;
-      console.log(`❌ Connection closed for ${sessionId} (code: ${code})`);
+      console.log(`❌ Connection closed for ${sessionId} (code: ${code}, shouldReconnect: ${shouldReconnect})`);
       
-      if (code === 405 || code === 401) {
+      if (code === DisconnectReason.loggedOut) {
+        console.log(`🚪 Explicitly logged out from device. Clearing auth for ${sessionId}.`);
         clearAuth(sessionId);
-      } else if (shouldReconnect) {
+      } else {
+        console.log(`🔄 Auto-reconnecting in 3s...`);
         setTimeout(() => connectToWhatsApp(sessionId, sessionObj, phone), 3000);
       }
     }
@@ -129,6 +131,7 @@ function getOrCreateSession(sessionId, phone = null) {
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 function normalizePhone(phone) {
+  if (phone.endsWith('@g.us')) return phone;
   const cleaned = phone.replace(/[^0-9]/g, '');
   const normalized = cleaned.startsWith('0') ? '62' + cleaned.slice(1) : cleaned;
   return `${normalized}@s.whatsapp.net`;
@@ -159,6 +162,24 @@ app.get('/sessions/:id/status', (req, res) => {
     name: sessionObj.connectionInfo.name || null,
     has_qr: !!sessionObj.qrCodeBase64,
   });
+});
+
+app.get('/sessions/:id/groups', async (req, res) => {
+  const sessionId = req.params.id;
+  const sessionObj = sessions.get(sessionId);
+  if (!sessionObj) return res.status(404).json({ error: 'Session not found' });
+  if (sessionObj.connectionState !== 'connected') return res.status(503).json({ error: 'WhatsApp not connected' });
+  
+  try {
+    const groups = await sessionObj.sock.groupFetchAllParticipating();
+    const groupList = Object.values(groups).map(g => ({
+      id: g.id,
+      name: g.subject
+    }));
+    res.json({ success: true, groups: groupList });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get('/sessions/:id/qr', (req, res) => {

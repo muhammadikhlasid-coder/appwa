@@ -267,6 +267,26 @@ async def wa_status(session_id: str, user: dict = Depends(get_current_user)):
     except Exception as e:
         return {"engine_running": False, "wa_connected": False, "scan_url": None, "message": str(e)}
 
+@app.get("/wa/groups/{session_id}")
+async def wa_groups(session_id: str, user: dict = Depends(get_current_user)):
+    user_id = user["sub"]
+    session = db.get_session(session_id, user_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            r = await client.get(f"{WA_ENGINE_URL}/sessions/{session_id}/groups")
+            if r.status_code == 200:
+                return r.json()
+            elif r.status_code == 503:
+                raise HTTPException(status_code=503, detail="WhatsApp is not connected or loading groups")
+            else:
+                raise HTTPException(status_code=r.status_code, detail=r.text)
+    except httpx.RequestError as e:
+        raise HTTPException(status_code=503, detail=f"Engine unavailable: {e}")
+
 
 @app.get("/dashboard/stats")
 async def dashboard_stats(user: dict = Depends(get_current_user)):
@@ -322,9 +342,12 @@ async def get_sessions(user: dict = Depends(get_current_user)):
 @app.post("/sessions")
 def add_session(req: AddSessionRequest, user: dict = Depends(get_current_user)):
     user_id = user["sub"]
+
+    # Cek apakah nomor sudah ada, jika ada kembalikan session lama agar ID tidak berubah
     existing = db.get_all_sessions(user_id)
-    if any(s["phone"] == req.phone for s in existing):
-        raise HTTPException(status_code=409, detail=f"Nomor {req.phone} sudah terdaftar")
+    for s in existing:
+        if s["phone"] == req.phone:
+            return {"status": "created", "session": s}
 
     session_id = f"sess_{str(uuid.uuid4())[:8]}"
     session = db.add_session(

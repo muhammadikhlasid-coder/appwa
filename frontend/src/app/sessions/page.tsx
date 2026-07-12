@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Smartphone, Plus, QrCode, Wifi, WifiOff, Flame, RefreshCw, MoreVertical, ShieldCheck, AlertCircle, Trash2, Copy, CheckCircle2, Code } from 'lucide-react';
+import { Smartphone, Plus, QrCode, Wifi, WifiOff, Flame, RefreshCw, MoreVertical, ShieldCheck, AlertCircle, Trash2, Copy, CheckCircle2, Code, Users } from 'lucide-react';
 import { api, type Session } from '@/lib/api';
 import LoadingLogo from '@/components/LoadingLogo';
 
@@ -39,6 +39,9 @@ export default function SessionsPage() {
   const [form, setForm] = useState({ name: '', phone: '', instance_name: '', enable_warmup: true });
   const [submitting, setSubmitting] = useState(false);
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const [showGroupModal, setShowGroupModal] = useState(false);
+  const [sessionGroups, setSessionGroups] = useState<{id: string, name: string}[] | null>(null);
+  const [fetchingGroups, setFetchingGroups] = useState(false);
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -93,6 +96,21 @@ export default function SessionsPage() {
       }
     } catch (e) {
       alert('Gagal menghubungkan ke engine.');
+    }
+  };
+
+  const handleGetGroups = async (sessionId: string) => {
+    setShowGroupModal(true);
+    setFetchingGroups(true);
+    setSessionGroups(null);
+    try {
+      const res = await api.getGroups(sessionId);
+      setSessionGroups(res.groups);
+    } catch (e) {
+      alert('Gagal mengambil daftar grup: ' + (e instanceof Error ? e.message : 'Unknown error'));
+      setShowGroupModal(false);
+    } finally {
+      setFetchingGroups(false);
     }
   };
 
@@ -188,7 +206,12 @@ export default function SessionsPage() {
                   <div style={{ display: 'flex', gap: '6px', position: 'relative' }}>
                     {s.status === 'disconnected'
                       ? <button className="btn-ghost" style={{ fontSize: '11px', padding: '4px 10px' }} onClick={() => handlePair(s.id)}><QrCode size={11} /> Pair</button>
-                      : <button className="btn-ghost" style={{ fontSize: '11px', padding: '4px 10px' }} onClick={() => setSelectedSession(s)}><ShieldCheck size={11} /> Details</button>}
+                      : (
+                        <>
+                          <button className="btn-ghost" style={{ fontSize: '11px', padding: '4px 10px' }} onClick={() => handleGetGroups(s.id)}><Users size={11} /> Groups</button>
+                          <button className="btn-ghost" style={{ fontSize: '11px', padding: '4px 10px' }} onClick={() => setSelectedSession(s)}><ShieldCheck size={11} /> Details</button>
+                        </>
+                      )}
                     <button 
                       className="btn-ghost" 
                       style={{ fontSize: '11px', padding: '4px 8px', background: openDropdownId === s.id ? 'var(--bg-card)' : '' }} 
@@ -326,6 +349,51 @@ SAFEWA_TIMEOUT=30`}
               <button className="btn-primary" style={{ flex: 1 }} onClick={handleAddSession} disabled={submitting}>
                 {submitting ? 'Adding...' : <><QrCode size={14} /> Add Session</>}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Groups Modal */}
+      {showGroupModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, backdropFilter: 'blur(4px)' }}
+          onClick={() => setShowGroupModal(false)}>
+          <div className="glass-card animate-fade-in" style={{ padding: '28px', width: '500px', maxWidth: '90vw', maxHeight: '80vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+            <h2 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '6px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Users size={18} color="var(--accent-blue)" /> WhatsApp Groups
+            </h2>
+            <p style={{ fontSize: '12.5px', color: 'var(--text-muted)', marginBottom: '20px' }}>List of groups this session is participating in.</p>
+
+            <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px', border: '1px solid var(--border)', borderRadius: '8px', background: 'var(--bg-primary)' }}>
+              {fetchingGroups ? (
+                <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Loading groups from WhatsApp Engine...</div>
+              ) : sessionGroups?.length === 0 ? (
+                <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>No groups found.</div>
+              ) : (
+                <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr>
+                      <th style={{ textAlign: 'left', padding: '10px 16px', borderBottom: '1px solid var(--border)', fontSize: '12px', color: 'var(--text-secondary)' }}>Group Name</th>
+                      <th style={{ textAlign: 'left', padding: '10px 16px', borderBottom: '1px solid var(--border)', fontSize: '12px', color: 'var(--text-secondary)' }}>Group ID</th>
+                      <th style={{ textAlign: 'right', padding: '10px 16px', borderBottom: '1px solid var(--border)', fontSize: '12px', color: 'var(--text-secondary)' }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sessionGroups?.map(g => (
+                      <tr key={g.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                        <td style={{ padding: '10px 16px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: '500' }}>{g.name}</td>
+                        <td style={{ padding: '10px 16px', fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{g.id}</td>
+                        <td style={{ padding: '10px 16px', textAlign: 'right', display: 'flex', justifyContent: 'flex-end' }}>
+                          <CopyBtn value={g.id} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button className="btn-primary" onClick={() => setShowGroupModal(false)}>Close</button>
             </div>
           </div>
         </div>
