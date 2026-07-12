@@ -47,20 +47,6 @@ async function connectToWhatsApp(sessionId, sessionObj, phone) {
     defaultQueryTimeoutMs: 30000,
   });
 
-  if (phone && !sessionObj.sock.authState.creds.registered) {
-    setTimeout(async () => {
-      try {
-        let p = phone.replace(/[^0-9]/g, '');
-        if (p.startsWith('0')) p = '62' + p.slice(1);
-        const code = await sessionObj.sock.requestPairingCode(p);
-        sessionObj.pairingCode = code;
-        console.log(`🔑 Pairing code generated for ${p}: ${code}`);
-      } catch (err) {
-        console.error('❌ Failed to generate pairing code:', err?.message);
-      }
-    }, 3000);
-  }
-
   sessionObj.sock.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update;
 
@@ -86,13 +72,29 @@ async function connectToWhatsApp(sessionId, sessionObj, phone) {
     }
 
     if (connection === 'open') {
+      const connectedPhone = sessionObj.sock.user?.id?.split(':')[0];
+      
+      // Strict phone validation
+      if (phone) {
+        let expectedPhone = phone.replace(/[^0-9]/g, '');
+        if (expectedPhone.startsWith('0')) expectedPhone = '62' + expectedPhone.slice(1);
+        
+        if (connectedPhone !== expectedPhone) {
+          console.error(`❌ Phone mismatch for ${sessionId}! Expected ${expectedPhone}, got ${connectedPhone}. Logging out...`);
+          sessionObj.sock.logout();
+          clearAuth(sessionId);
+          sessionObj.connectionState = 'disconnected';
+          return;
+        }
+      }
+
       sessionObj.connectionState = 'connected';
       sessionObj.qrCodeBase64 = null;
       sessionObj.pairingCode = null;
       sessionObj.connectionInfo = {
         jid: sessionObj.sock.user?.id,
         name: sessionObj.sock.user?.name,
-        phone: sessionObj.sock.user?.id?.split(':')[0],
+        phone: connectedPhone,
       };
       console.log(`✅ WhatsApp Connected! Session: ${sessionId}, Number: ${sessionObj.connectionInfo.phone}`);
     }
@@ -159,7 +161,7 @@ app.get('/sessions/:id/qr', (req, res) => {
   if (sessionObj.connectionState === 'connected') {
     return res.json({ connected: true, message: 'Already connected' });
   }
-  if (!sessionObj.qrCodeBase64 && !sessionObj.pairingCode) {
+  if (!sessionObj.qrCodeBase64) {
     return res.status(503).send(`
       <!DOCTYPE html>
       <html>
@@ -198,16 +200,9 @@ app.get('/sessions/:id/qr', (req, res) => {
     <body>
       <h2>Hubungkan WhatsApp Anda</h2>
       
-      ${sessionObj.pairingCode ? `
-        <div class="code-box">
-          <div class="label">Masukkan kode ini di WhatsApp:</div>
-          <div class="code">${sessionObj.pairingCode}</div>
-        </div>
-      ` : ''}
-
       ${sessionObj.qrCodeBase64 ? `
         <div style="text-align: center;">
-          <div class="label">Atau scan QR Code:</div>
+          <div class="label">Scan QR Code ini:</div>
           <img src="${sessionObj.qrCodeBase64}" width="280" />
         </div>
       ` : ''}
