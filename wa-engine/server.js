@@ -282,9 +282,13 @@ app.post('/sessions/:id/send', async (req, res) => {
 
   const jid = normalizePhone(phone);
   try {
-    await sessionObj.sock.sendPresenceUpdate('composing', jid);
-    await sleep(delay_ms);
-    await sessionObj.sock.sendPresenceUpdate('paused', jid);
+    try {
+      await sessionObj.sock.sendPresenceUpdate('composing', jid);
+      await sleep(delay_ms);
+      await sessionObj.sock.sendPresenceUpdate('paused', jid);
+    } catch (presenceErr) {
+      console.log(`[Warning] Could not send presence update to ${jid}:`, presenceErr.message);
+    }
     const result = await sessionObj.sock.sendMessage(jid, { text });
     res.json({ success: true, message_id: result.key.id });
   } catch (err) {
