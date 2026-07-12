@@ -308,5 +308,5 @@ html, body {
   .page-container { padding: 16px 12px !important; }
   .glass-card { padding: 16px !important; }
   h1 { font-size: 18px !important; }
-  .header-actions { flex-direction: column; align-items: stretch; gap: 10px; width: 100%; margin-top: 10px; }
+  .header-actions { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; width: 100% !important; margin-top: 10px !important; }
 }

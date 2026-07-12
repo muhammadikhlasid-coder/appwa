@@ -73,7 +73,7 @@ export default function DashboardPage() {
   return (
     <div className="page-container">
       {/* Header */}
-      <div className="animate-fade-in" style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+      <div className="header-actions animate-fade-in" style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
           <h1 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>
             Dashboard Overview
