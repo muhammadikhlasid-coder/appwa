@@ -282,14 +282,22 @@ app.post('/sessions/:id/send', async (req, res) => {
 
   const jid = normalizePhone(phone);
   try {
-    try {
-      await sessionObj.sock.sendPresenceUpdate('composing', jid);
-      await sleep(delay_ms);
-      await sessionObj.sock.sendPresenceUpdate('paused', jid);
-    } catch (presenceErr) {
-      console.log(`[Warning] Could not send presence update to ${jid}:`, presenceErr.message);
+    // Force Baileys to fetch pre-keys and verify if number exists on WA
+    const [resultWa] = await sessionObj.sock.onWhatsApp(jid);
+    if (!resultWa || !resultWa.exists) {
+       console.log(`[Error] Number ${jid} is not registered on WhatsApp.`);
+       return res.status(400).json({ error: 'Number is not registered on WhatsApp' });
     }
-    const result = await sessionObj.sock.sendMessage(jid, { text });
+    const realJid = resultWa.jid; // Use the exact JID returned by WhatsApp
+
+    try {
+      await sessionObj.sock.sendPresenceUpdate('composing', realJid);
+      await sleep(delay_ms);
+      await sessionObj.sock.sendPresenceUpdate('paused', realJid);
+    } catch (presenceErr) {
+      console.log(`[Warning] Could not send presence update to ${realJid}:`, presenceErr.message);
+    }
+    const result = await sessionObj.sock.sendMessage(realJid, { text });
     res.json({ success: true, message_id: result.key.id });
   } catch (err) {
     res.status(500).json({ error: err.message });
