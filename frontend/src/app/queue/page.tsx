@@ -76,7 +76,7 @@ export default function QueuePage() {
       {/* Header */}
       <div className="header-actions animate-fade-in" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '28px' }}>
         <div>
-          <h1 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>Live Queue Monitor</h1>
+          <h1 className="text-lg-responsive" style={{ fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>Live Queue Monitor</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Real-time · Drip-feed · Max 3 msg/min per session</p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -104,7 +104,7 @@ export default function QueuePage() {
         ].map((s, i) => (
           <div key={i} className="glass-card animate-fade-in" style={{ padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{s.label}</span>
-            <span style={{ fontSize: '22px', fontWeight: '800', color: s.color }}>{loading ? '…' : s.value}</span>
+            <span className="text-xl-responsive" style={{ fontWeight: '800', color: s.color }}>{loading ? '…' : s.value}</span>
           </div>
         ))}
       </div>
@@ -138,7 +138,7 @@ export default function QueuePage() {
         {/* Active Queue */}
         <div className="glass-card animate-fade-in" style={{ padding: '20px', animationDelay: '200ms' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h2 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)' }}>Active Queue</h2>
+            <h2 className="text-md-responsive" style={{ fontWeight: '700', color: 'var(--text-primary)' }}>Active Queue</h2>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <div className="animate-pulse-dot" style={{ width: '7px', height: '7px', borderRadius: '50%', background: paused ? 'var(--accent-amber)' : 'var(--accent-green)' }} />
               <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{paused ? 'Paused' : 'Live (2s)'}</span>
@@ -173,7 +173,7 @@ export default function QueuePage() {
         {/* Sent Log */}
         <div className="glass-card animate-fade-in" style={{ padding: '20px', animationDelay: '260ms' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h2 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)' }}>Sent Log</h2>
+            <h2 className="text-md-responsive" style={{ fontWeight: '700', color: 'var(--text-primary)' }}>Sent Log</h2>
             <button className="btn-ghost" style={{ fontSize: '12px', padding: '5px 12px' }}>Export <ArrowUpRight size={12} /></button>
           </div>
           {recentSent.length === 0 ? (

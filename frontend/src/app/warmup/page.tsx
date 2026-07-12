@@ -70,7 +70,7 @@ export default function WarmupPage() {
       {/* Header */}
       <div className="header-actions animate-fade-in" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '28px' }}>
         <div>
-          <h1 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>Auto Warm-Up</h1>
+          <h1 className="text-lg-responsive" style={{ fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>Auto Warm-Up</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>AI-powered bot chatter untuk naikkan Trust Score nomor baru</p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -111,10 +111,10 @@ export default function WarmupPage() {
 
       {/* How It Works */}
       <div className="glass-card animate-fade-in" style={{ padding: '20px', marginBottom: '20px', animationDelay: '100ms' }}>
-        <h2 style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <h2 className="text-md-responsive" style={{ fontWeight: '700', color: 'var(--text-primary)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Zap size={14} color="var(--accent-amber)" /> How It Works
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+        <div className="how-it-works-grid">
           {[
             { icon: Bot, label: '1. Register Number', desc: 'Hubungkan nomor WA baru ke gateway', color: 'var(--accent-blue)' },
             { icon: MessageSquare, label: '2. AI Chatter Active', desc: 'Gemini generate percakapan santai otomatis', color: 'var(--accent-purple)' },
@@ -138,7 +138,7 @@ export default function WarmupPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Active Sessions from API */}
           <div className="glass-card animate-fade-in" style={{ padding: '20px', animationDelay: '140ms' }}>
-            <h2 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '16px' }}>Active Warm-Up Sessions</h2>
+            <h2 className="text-md-responsive" style={{ fontWeight: '700', color: 'var(--text-primary)', marginBottom: '16px' }}>Active Warm-Up Sessions</h2>
             {loading ? (
               <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Loading...</p>
             ) : sessions.length === 0 ? (

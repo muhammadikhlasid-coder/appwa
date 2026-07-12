@@ -75,7 +75,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="header-actions animate-fade-in" style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
-          <h1 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>
+          <h1 className="text-lg-responsive" style={{ fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>
             Dashboard Overview
           </h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -112,7 +112,7 @@ export default function DashboardPage() {
                 <span style={{ fontSize: '11px', color: 'var(--accent-green)', fontWeight: '600' }}>{s.delta}</span>
               </div>
               <div>
-                <div style={{ fontSize: '28px', fontWeight: '800', color: loading ? 'var(--text-muted)' : 'var(--text-primary)', lineHeight: 1 }}>{s.value}</div>
+                <div className="text-2xl-responsive" style={{ fontWeight: '800', color: loading ? 'var(--text-muted)' : 'var(--text-primary)' }}>{s.value}</div>
                 <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>{s.label}</div>
               </div>
             </div>
@@ -177,8 +177,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Anti-Ban Status */}
-          <div className="glass-card animate-fade-in" style={{ padding: '20px', animationDelay: '400ms' }}>
-            <h2 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '16px' }}>Anti-Ban Middleware</h2>
+          <div className="glass-card animate-fade-in" style={{ padding: '20px', animationDelay: '400ms', minWidth: 0 }}>
+            <h2 className="text-md-responsive" style={{ fontWeight: '700', color: 'var(--text-primary)', marginBottom: '16px' }}>Anti-Ban Middleware</h2>
             {[
               { label: 'ZWC Injector', key: 'zwc_injector' },
               { label: 'Auto Chunker', key: 'auto_chunker' },

@@ -129,8 +129,8 @@ export default function SessionsPage() {
       {/* Header */}
       <div className="header-actions animate-fade-in" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '28px' }}>
         <div>
-          <h1 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>Sessions</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Manage your WhatsApp numbers & connections</p>
+          <h1 className="text-lg-responsive" style={{ fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>Session Management</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Hubungkan nomor WhatsApp untuk dijadikan gateway pengiriman</p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
           <button className="btn-ghost" onClick={() => window.location.reload()}><RefreshCw size={13} /> Refresh</button>
@@ -156,7 +156,7 @@ export default function SessionsPage() {
         ].map((s, i) => (
           <div key={i} className="glass-card animate-fade-in" style={{ padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>{s.label}</span>
-            <span style={{ fontSize: '22px', fontWeight: '800', color: s.color }}>{loading ? '…' : s.value}</span>
+            <span className="text-xl-responsive" style={{ fontWeight: '800', color: s.color }}>{loading ? '…' : s.value}</span>
           </div>
         ))}
       </div>
@@ -164,7 +164,7 @@ export default function SessionsPage() {
       {/* Sessions Table */}
       <div className="glass-card animate-fade-in" style={{ padding: 0, overflow: 'visible', animationDelay: '200ms' }}>
         <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)' }}>All Sessions</h2>
+          <h2 className="text-md-responsive" style={{ fontWeight: '700', color: 'var(--text-primary)' }}>All Sessions</h2>
           <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Live data from API · refresh 5s</span>
         </div>
         <div className="table-responsive">

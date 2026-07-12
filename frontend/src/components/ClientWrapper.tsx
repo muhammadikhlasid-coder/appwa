@@ -48,7 +48,7 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
   }, [pathname]);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-primary)' }}>
+    <div className="layout-wrapper" style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-primary)' }}>
       {!isAuthPage && (
         <>
           <div className={`sidebar-overlay ${mobileMenuOpen ? 'open' : ''}`} onClick={() => setMobileMenuOpen(false)}></div>
