@@ -125,9 +125,9 @@ export default function SessionsPage() {
   }
 
   return (
-    <div style={{ padding: '28px 32px' }}>
+    <div className="page-container">
       {/* Header */}
-      <div className="animate-fade-in" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '28px' }}>
+      <div className="header-actions animate-fade-in" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '28px' }}>
         <div>
           <h1 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>Sessions</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Manage your WhatsApp numbers & connections</p>
@@ -167,7 +167,8 @@ export default function SessionsPage() {
           <h2 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)' }}>All Sessions</h2>
           <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Live data from API · refresh 5s</span>
         </div>
-        <table className="data-table">
+        <div className="table-responsive">
+          <table className="data-table">
           <thead>
             <tr>
               <th>Name / Phone</th><th>Status</th><th>Trust Score</th><th>Sent Today</th><th>Proxy</th><th>Actions</th>
@@ -243,13 +244,14 @@ export default function SessionsPage() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Session Details Modal */}
       {selectedSession && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, backdropFilter: 'blur(4px)' }}
           onClick={() => setSelectedSession(null)}>
-          <div className="glass-card animate-fade-in" style={{ padding: '28px', width: '420px', maxWidth: '90vw' }} onClick={e => e.stopPropagation()}>
+          <div className="glass-card animate-fade-in" style={{ padding: '28px', width: '420px', maxWidth: '90vw', maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
             <h2 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <ShieldCheck size={18} color="var(--accent-green)" /> Session Details
             </h2>
@@ -320,7 +322,7 @@ SAFEWA_TIMEOUT=30`}
       {showModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, backdropFilter: 'blur(4px)' }}
           onClick={() => setShowModal(false)}>
-          <div className="glass-card animate-fade-in" style={{ padding: '28px', width: '420px', maxWidth: '90vw' }} onClick={e => e.stopPropagation()}>
+          <div className="glass-card animate-fade-in" style={{ padding: '28px', width: '420px', maxWidth: '90vw', maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
             <h2 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '6px', color: 'var(--text-primary)' }}>Add New Session</h2>
             <p style={{ fontSize: '12.5px', color: 'var(--text-muted)', marginBottom: '20px' }}>Connect a new WhatsApp number to the gateway.</p>
 
@@ -369,7 +371,8 @@ SAFEWA_TIMEOUT=30`}
               ) : sessionGroups?.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>No groups found.</div>
               ) : (
-                <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <div className="table-responsive">
+                  <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
                     <tr>
                       <th style={{ textAlign: 'left', padding: '10px 16px', borderBottom: '1px solid var(--border)', fontSize: '12px', color: 'var(--text-secondary)' }}>Group Name</th>
@@ -389,6 +392,7 @@ SAFEWA_TIMEOUT=30`}
                     ))}
                   </tbody>
                 </table>
+                </div>
               )}
             </div>
 

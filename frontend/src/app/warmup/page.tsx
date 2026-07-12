@@ -66,9 +66,9 @@ export default function WarmupPage() {
   }
 
   return (
-    <div style={{ padding: '28px 32px' }}>
+    <div className="page-container">
       {/* Header */}
-      <div className="animate-fade-in" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '28px' }}>
+      <div className="header-actions animate-fade-in" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '28px' }}>
         <div>
           <h1 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>Auto Warm-Up</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>AI-powered bot chatter untuk naikkan Trust Score nomor baru</p>
@@ -134,7 +134,7 @@ export default function WarmupPage() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '16px' }}>
+      <div className="warmup-grid">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Active Sessions from API */}
           <div className="glass-card animate-fade-in" style={{ padding: '20px', animationDelay: '140ms' }}>

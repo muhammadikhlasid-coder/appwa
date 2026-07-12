@@ -71,7 +71,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div style={{ padding: '28px 32px', minHeight: '100vh' }}>
+    <div className="page-container">
       {/* Header */}
       <div className="animate-fade-in" style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
@@ -121,7 +121,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '16px' }}>
+      <div className="dashboard-grid">
 
         {/* Activity Log */}
         <div className="glass-card animate-fade-in" style={{ padding: '20px', animationDelay: '280ms' }}>
@@ -129,7 +129,8 @@ export default function DashboardPage() {
             <h2 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)' }}>Message Activity Log</h2>
             <button className="btn-ghost" style={{ fontSize: '12px', padding: '5px 12px' }}>View All <ArrowUpRight size={12} /></button>
           </div>
-          <table className="data-table">
+          <div className="table-responsive">
+            <table className="data-table">
             <thead>
               <tr><th>Time</th><th>Phone</th><th>Preview</th><th>Status</th><th>Delay</th></tr>
             </thead>
@@ -150,6 +151,7 @@ export default function DashboardPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
 
         {/* Right panel */}

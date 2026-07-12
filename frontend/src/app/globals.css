@@ -255,3 +255,58 @@ html, body {
 .nav-link:hover { background: var(--bg-card); color: var(--text-primary); }
 .nav-link.active { background: var(--accent-blue-dim); color: var(--accent-blue); }
 .nav-link.active svg { color: var(--accent-blue); }
+
+/* Responsive Layout */
+.mobile-header { display: none; }
+.sidebar-overlay { display: none; }
+.dashboard-grid { display: grid; grid-template-columns: 1fr 320px; gap: 16px; }
+.test-send-grid { display: grid; grid-template-columns: 200px 1fr auto; gap: 10px; align-items: flex-end; }
+.two-col-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.warmup-grid { display: grid; grid-template-columns: 1fr 340px; gap: 16px; }
+.page-container { padding: 28px 32px; min-height: 100vh; }
+.table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+@media (max-width: 1024px) {
+  .dashboard-grid, .warmup-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  /* Sidebar */
+  .sidebar-container {
+    position: fixed; top: 0; left: 0; height: 100vh; z-index: 100;
+    transform: translateX(-100%); transition: transform 0.3s ease;
+  }
+  .sidebar-container.open { transform: translateX(0); }
+  
+  .sidebar-overlay {
+    display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px);
+    z-index: 90; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+  }
+  .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+
+  .mobile-header {
+    display: flex; alignItems: center; gap: 12px; padding: 12px 20px;
+    background: var(--bg-card); border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 40;
+  }
+  .mobile-menu-btn {
+    background: none; border: none; padding: 4px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Grids */
+  .stagger-children { grid-template-columns: 1fr 1fr !important; }
+  .test-send-grid { grid-template-columns: 1fr; align-items: stretch; }
+  .two-col-grid { grid-template-columns: 1fr; }
+  
+  /* Page Padding */
+  .page-container { padding: 20px 16px !important; }
+}
+
+@media (max-width: 480px) {
+  .stagger-children { grid-template-columns: 1fr !important; }
+  .page-container { padding: 16px 12px !important; }
+  .glass-card { padding: 16px !important; }
+  h1 { font-size: 18px !important; }
+  .header-actions { flex-direction: column; align-items: stretch; gap: 10px; width: 100%; margin-top: 10px; }
+}

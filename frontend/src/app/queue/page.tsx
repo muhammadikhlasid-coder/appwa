@@ -72,9 +72,9 @@ export default function QueuePage() {
   }
 
   return (
-    <div style={{ padding: '28px 32px' }}>
+    <div className="page-container">
       {/* Header */}
-      <div className="animate-fade-in" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '28px' }}>
+      <div className="header-actions animate-fade-in" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '28px' }}>
         <div>
           <h1 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>Live Queue Monitor</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Real-time · Drip-feed · Max 3 msg/min per session</p>
@@ -112,7 +112,7 @@ export default function QueuePage() {
       {/* Test Send Panel */}
       <div className="glass-card animate-fade-in" style={{ padding: '20px', marginBottom: '16px', animationDelay: '160ms' }}>
         <h2 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '14px' }}>Test Send Message</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr auto', gap: '10px', alignItems: 'flex-end' }}>
+        <div className="test-send-grid">
           <div>
             <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '5px' }}>Phone Number</label>
             <input value={testPhone} onChange={e => setTestPhone(e.target.value)}
@@ -134,7 +134,7 @@ export default function QueuePage() {
         )}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+      <div className="two-col-grid">
         {/* Active Queue */}
         <div className="glass-card animate-fade-in" style={{ padding: '20px', animationDelay: '200ms' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
