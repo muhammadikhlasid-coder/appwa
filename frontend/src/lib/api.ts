@@ -47,7 +47,7 @@ export const api = {
   // Sessions
   getSessions: () => apiFetch<{ sessions: Session[]; total: number }>('/sessions'),
   getSessionStatus: (id: string) => apiFetch<Session>(`/sessions/${id}/status`),
-  getWaStatus: (id?: string) => apiFetch<{ scan_url: string, wa_connected: boolean, engine_running: boolean }>(id ? `/wa/status/${id}` : '/wa/status'),
+  getWaStatus: (id?: string) => apiFetch<{ scan_url: string, wa_connected: boolean, engine_running: boolean, phone?: string, name?: string }>(id ? `/wa/status/${id}` : '/wa/status'),
   getQrCode: (id: string) => apiFetch<{ qr_data: unknown }>(`/sessions/${id}/qr`),
   addSession: (data: AddSessionPayload) =>
     apiFetch<{ session: Session }>('/sessions', { method: 'POST', body: JSON.stringify(data) }),
