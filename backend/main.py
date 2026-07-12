@@ -228,6 +228,17 @@ async def health():
     return {"status": "online", "service": "Safe WA Gateway (Multi-Tenant)"}
 
 
+@app.get("/wa/status")
+async def wa_status_global(user: dict = Depends(get_current_user)):
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=3) as client:
+            await client.get(f"{WA_ENGINE_URL}/")
+            return {"engine_running": True, "wa_connected": False}
+    except Exception:
+        return {"engine_running": False, "wa_connected": False}
+
+
 @app.get("/wa/status/{session_id}")
 async def wa_status(session_id: str, user: dict = Depends(get_current_user)):
     user_id = user["sub"]
