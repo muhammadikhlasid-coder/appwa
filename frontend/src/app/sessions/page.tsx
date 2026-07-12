@@ -69,6 +69,19 @@ export default function SessionsPage() {
     }
   };
 
+  const handlePair = async (sessionId: string) => {
+    try {
+      const status = await api.getWaStatus(sessionId);
+      if (status.scan_url) {
+        window.open(status.scan_url, 'qr_window', 'width=450,height=600');
+      } else {
+        alert('Gagal mendapatkan URL Pairing dari server.');
+      }
+    } catch (e) {
+      alert('Gagal menghubungkan ke engine.');
+    }
+  };
+
   const currentSessions = sessions ?? [];
   const total = currentSessions.length;
   const connected = currentSessions.filter(s => s.status === 'connected').length;
@@ -160,7 +173,7 @@ export default function SessionsPage() {
                 <td>
                   <div style={{ display: 'flex', gap: '6px', position: 'relative' }}>
                     {s.status === 'disconnected'
-                      ? <button className="btn-ghost" style={{ fontSize: '11px', padding: '4px 10px' }} onClick={() => window.open('http://localhost:3001/qr', 'qr_window', 'width=400,height=500')}><QrCode size={11} /> Pair</button>
+                      ? <button className="btn-ghost" style={{ fontSize: '11px', padding: '4px 10px' }} onClick={() => handlePair(s.id)}><QrCode size={11} /> Pair</button>
                       : <button className="btn-ghost" style={{ fontSize: '11px', padding: '4px 10px' }} onClick={() => setSelectedSession(s)}><ShieldCheck size={11} /> Details</button>}
                     <button 
                       className="btn-ghost" 

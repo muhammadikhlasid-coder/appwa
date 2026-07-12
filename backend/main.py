@@ -240,7 +240,7 @@ async def wa_status(session_id: str, user: dict = Depends(get_current_user)):
         async with httpx.AsyncClient(timeout=3) as client:
             r = await client.get(f"{WA_ENGINE_URL}/sessions/{session_id}/status")
             if r.status_code == 404:
-                await client.post(f"{WA_ENGINE_URL}/sessions/{session_id}/connect")
+                await client.post(f"{WA_ENGINE_URL}/sessions/{session_id}/connect", json={"phone": session["phone"]})
                 r = await client.get(f"{WA_ENGINE_URL}/sessions/{session_id}/status")
             
             data = r.json()
@@ -276,6 +276,7 @@ async def dashboard_stats(user: dict = Depends(get_current_user)):
         "queue_depth": stats["queue_depth"],
         "recent_sent": recent,
         "middleware": {"zwc_injector": True, "auto_chunker": True, "typing_simulator": True, "rate_limiter": True},
+        "gemini_configured": bool(GEMINI_KEY),
     }
 
 

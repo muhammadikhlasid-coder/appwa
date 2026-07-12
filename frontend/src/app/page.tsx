@@ -87,7 +87,6 @@ export default function DashboardPage() {
             </div>
             {lastRefresh && <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>· Updated {lastRefresh}</span>}
             {apiStats?.gemini_configured && <span className="badge badge-purple" style={{ fontSize: '10px' }}>Gemini ✓</span>}
-            {apiStats?.evolution_configured && <span className="badge badge-green" style={{ fontSize: '10px' }}>Evolution ✓</span>}
           </div>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>

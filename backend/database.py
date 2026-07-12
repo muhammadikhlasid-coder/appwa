@@ -26,7 +26,7 @@ def init_db():
                 id          TEXT PRIMARY KEY,
                 user_id     TEXT NOT NULL,
                 name        TEXT NOT NULL,
-                phone       TEXT NOT NULL UNIQUE,
+                phone       TEXT NOT NULL,
                 status      TEXT NOT NULL DEFAULT 'disconnected',
                 trust       INTEGER NOT NULL DEFAULT 5,
                 sent_today  INTEGER NOT NULL DEFAULT 0,
@@ -35,6 +35,30 @@ def init_db():
                 created_at  REAL NOT NULL DEFAULT (unixepoch())
             )
         """)
+        
+        # Migration: Remove UNIQUE constraint from phone column if it exists
+        try:
+            schema = conn.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name='sessions'").fetchone()
+            if schema and "UNIQUE" in schema["sql"].upper():
+                conn.execute("ALTER TABLE sessions RENAME TO sessions_old")
+                conn.execute("""
+                    CREATE TABLE sessions (
+                        id          TEXT PRIMARY KEY,
+                        user_id     TEXT NOT NULL,
+                        name        TEXT NOT NULL,
+                        phone       TEXT NOT NULL,
+                        status      TEXT NOT NULL DEFAULT 'disconnected',
+                        trust       INTEGER NOT NULL DEFAULT 5,
+                        sent_today  INTEGER NOT NULL DEFAULT 0,
+                        proxy       TEXT NOT NULL DEFAULT '—',
+                        warmup      INTEGER NOT NULL DEFAULT 0,
+                        created_at  REAL NOT NULL DEFAULT (unixepoch())
+                    )
+                """)
+                conn.execute("INSERT INTO sessions SELECT id, user_id, name, phone, status, trust, sent_today, proxy, warmup, created_at FROM sessions_old")
+                conn.execute("DROP TABLE sessions_old")
+        except Exception as e:
+            print(f"Migration error: {e}")
         conn.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id          TEXT PRIMARY KEY,
