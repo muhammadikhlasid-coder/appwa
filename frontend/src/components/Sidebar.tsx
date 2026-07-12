@@ -96,25 +96,21 @@ export default function Sidebar() {
         marginBottom: '8px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-          <div className={waStatus?.connected ? 'animate-glow' : ''} style={{
+          <div className={waStatus?.engine_running ? 'animate-glow' : ''} style={{
             width: '7px', height: '7px', borderRadius: '50%',
-            background: waStatus?.connected ? 'var(--accent-green)' : waStatus?.engine_running ? 'var(--accent-amber)' : 'rgba(255,255,255,0.15)',
+            background: waStatus?.engine_running ? 'var(--accent-green)' : 'rgba(255,255,255,0.15)',
             transition: 'background 0.3s',
           }} />
           <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--text-primary)' }}>
-            {waStatus?.connected ? 'WA Connected' : waStatus?.engine_running ? 'Scan QR' : 'WA Offline'}
+            {waStatus?.engine_running ? 'Engine Online' : 'Engine Offline'}
           </span>
         </div>
-        {waStatus?.connected && waStatus.phone ? (
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{waStatus.phone}</div>
-        ) : waStatus?.engine_running ? (
-          <Link href="/settings" style={{ fontSize: '11px', color: 'var(--accent-amber)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <QrCode size={10} /> Buka Settings → Scan QR
-          </Link>
+        {waStatus?.engine_running ? (
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Sistem Gateway aktif</div>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Zap size={11} color="var(--accent-amber)" />
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>API v2.0 · FastAPI</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Tidak Terhubung</span>
           </div>
         )}
       </div>
